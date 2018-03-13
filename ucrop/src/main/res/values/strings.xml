@@ -1,0 +1,29 @@
+<resources>
+
+    <string name="ucrop_label_original">Original</string>
+    <string name="ucrop_label_edit_photo">Edit Photo</string>
+
+    <string name="ucrop_menu_crop">Crop</string>
+
+    <string name="ucrop_error_input_data_is_absent" translatable="false">Both input and output Uri must be specified</string>
+    <string name="ucrop_mutate_exception_hint" translatable="false">Therefore, override color resource (ucrop_color_toolbar_widget) in your app to make it work on pre-L devices</string>
+
+
+    <string name="ucrop_activity_title_main">Filters</string>
+    <string name="ucrop_action_settings">Settings</string>
+    <string name="ucrop_filters">FILTERS</string>
+    <string name="ucrop_edit">EDIT</string>
+
+    <string name="ucrop_lbl_brightness">BRIGHTNESS</string>
+    <string name="ucrop_lbl_contrast">CONTRAST</string>
+    <string name="ucrop_lbl_saturation">SATURATION</string>
+    <string name="ucrop_tab_filters">FILTERS</string>
+    <string name="ucrop_tab_edit">EDIT</string>
+
+
+    <string name="ucrop_roboto_medium">sans-serif-medium</string>
+    <string name="ucrop_filter_normal">Normal</string>
+    <string name="ucrop_action_save">SAVE</string>
+    <string name="ucrop_action_open">OPEN</string>
+
+</resources>
