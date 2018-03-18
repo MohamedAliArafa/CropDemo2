@@ -41,6 +41,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <activity android:name="me.iwf.photopicker.PhotoPickerActivity" />
     </application>
 
 </manifest>

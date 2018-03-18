@@ -440,6 +440,11 @@ public class UCropActivity extends AppCompatActivity{
         }
 
         @Override
+        public void onDrawNewScales(float currentScale, float xc, float yc) {
+
+        }
+
+        @Override
         public void onLoadComplete() {
             mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
             mBlockingView.setClickable(false);

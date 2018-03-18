@@ -1,1 +1,1 @@
-include ':ucrop', ':app'
+include ':ucrop', ':app', ':PhotoPicker'

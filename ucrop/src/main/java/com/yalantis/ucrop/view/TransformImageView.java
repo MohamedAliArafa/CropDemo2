@@ -1,5 +1,6 @@
 package com.yalantis.ucrop.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -25,6 +26,7 @@ import com.yalantis.ucrop.util.RectUtils;
  * This class provides base logic to setup the image, transform it with matrix (move, scale, rotate),
  * and methods to get current matrix state.
  */
+@SuppressLint("AppCompatCustomView")
 public class TransformImageView extends ImageView {
 
     private static final String TAG = "TransformImageView";
@@ -67,6 +69,7 @@ public class TransformImageView extends ImageView {
 
         void onScale(float currentScale);
 
+        void onDrawNewScales(float currentScale , float xc , float yc);
     }
 
     public TransformImageView(Context context) {
@@ -157,6 +160,11 @@ public class TransformImageView extends ImageView {
                         if (mTransformImageListener != null) {
                             mTransformImageListener.onLoadFailure(bitmapWorkerException);
                         }
+                    }
+
+                    @Override
+                    public void afterLoadComplete(float scale, float xCoor, float yCoor) {
+
                     }
                 });
     }

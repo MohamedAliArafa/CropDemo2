@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import com.yalantis.ucrop.R;
+import com.yalantis.ucrop.UCropActivity;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.callback.CropBoundsChangeListener;
 import com.yalantis.ucrop.model.CropParameters;
@@ -44,6 +45,7 @@ public class CropImageView extends TransformImageView {
 
     private float mTargetAspectRatio;
     private float mMaxScaleMultiplier = DEFAULT_MAX_SCALE_MULTIPLIER;
+    LowPixelsInteractions lowPixelsInteractions;
 
     private CropBoundsChangeListener mCropBoundsChangeListener;
 
@@ -63,6 +65,45 @@ public class CropImageView extends TransformImageView {
 
     public CropImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+
+    public void setLowPixelsInteractions(LowPixelsInteractions lowPixelsInteractions){
+     this.lowPixelsInteractions = lowPixelsInteractions;
+    }
+    /**
+     * Defined by us
+     * get positions of x ,y ,width and height of the image that positions is used for cropping process
+     * so we can detect if the width or height are less than defined value so we can detect resolution
+     */
+    public void  getImageState() {
+        final ImageState imageState = new ImageState(
+                mCropRect, RectUtils.trapToRect(mCurrentImageCorners),
+                getCurrentScale(), getCurrentAngle());
+
+
+        RectF mCropRect = imageState.getCropRect();
+        RectF mCurrentImageRect = imageState.getCurrentImageRect();
+        float mCurrentScale = imageState.getCurrentScale();
+
+        int cropOffsetX = Math.round((mCropRect.left - mCurrentImageRect.left) / mCurrentScale);
+        int cropOffsetY = Math.round((mCropRect.top - mCurrentImageRect.top) / mCurrentScale);
+        int mCroppedImageWidth = Math.round(mCropRect.width() / mCurrentScale);
+        int mCroppedImageHeight = Math.round(mCropRect.height() / mCurrentScale);
+
+        if (mCroppedImageWidth < 512){
+            if(lowPixelsInteractions!=null){
+
+                lowPixelsInteractions.showHidePixelsImage(true);
+            }
+            Log.e("PIXELS" , "pixels are fewer than 512px");
+        }else {
+            if(lowPixelsInteractions!=null){
+                lowPixelsInteractions.showHidePixelsImage(false);
+            }
+        }
+
+        Log.e("Dimensions" , "x is "+cropOffsetX +" -  y is "+cropOffsetY +"   width is "+mCroppedImageWidth + "     height is "+mCroppedImageHeight );
     }
 
     /**
@@ -624,6 +665,10 @@ public class CropImageView extends TransformImageView {
             }
         }
 
+    }
+
+    public interface LowPixelsInteractions{
+        void showHidePixelsImage(boolean show);
     }
 
 }

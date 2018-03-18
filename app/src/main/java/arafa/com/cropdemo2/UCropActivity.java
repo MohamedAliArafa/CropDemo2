@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yalantis.ucrop.Constants;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
@@ -81,7 +82,7 @@ import static com.yalantis.ucrop.UCrop.Options.SCALE;
  */
 
 @SuppressWarnings("ConstantConditions")
-public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapter.ThumbnailsAdapterListener {
+public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapter.ThumbnailsAdapterListener , CropImageView.LowPixelsInteractions {
 
     public static final int DEFAULT_COMPRESS_QUALITY = 90;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
@@ -93,6 +94,10 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
     Bitmap filteredBitmap = null;
     private ArrayList<ThumbnailItem> thumbnailItemList = new ArrayList<>();
     ThumbnailsAdapter mAdapter;
+
+    float defaultScale, xCoor, yCoor;
+
+    private boolean hasDefaultScale = false;
 
     static {
         System.loadLibrary("NativeImageProcessor");
@@ -162,8 +167,13 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
         this.listener = listener;
     }
 
-    static {
-        System.loadLibrary("NativeImageProcessor");
+    @Override
+    public void showHidePixelsImage(boolean show) {
+        if (show){
+            lowPixelsIv.setVisibility(View.VISIBLE);
+        }else {
+            lowPixelsIv.setVisibility(View.INVISIBLE);
+        }
     }
 
     public interface FiltersListFragmentListener {
@@ -260,6 +270,8 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
             mLayoutBrightness;
     private List<ViewGroup> mCropAspectRatioViews = new ArrayList<>();
     private TextView mTextViewRotateAngle, mTextViewScalePercent, mTextViewBrightnessPercent;
+    ImageView lowPixelsIv ;
+
     private View mBlockingView;
 
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
@@ -277,6 +289,25 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
         setImageData(intent);
         setInitialState();
         addBlockingView();
+
+
+        setupDefaultScale(intent);
+    }
+
+    private void setupDefaultScale(Intent intent) {
+        if (intent != null && intent.hasExtra(Constants.EXTRA_SCALE_DEFAULT)) {
+            float defaultScale = intent.getFloatExtra(Constants.EXTRA_SCALE_DEFAULT, 0f);
+            float xCoor = intent.getFloatExtra(Constants.EXTRA_XCOR_DEFAULT, 0f);
+            float yCoor = intent.getFloatExtra(Constants.EXTRA_YCOR_DEFAULT, 0f);
+            Log.e("DefaultScale", mGestureCropImageView.getCurrentScale() + defaultScale + "->");
+            Log.e("yCoor", yCoor + "->");
+            Log.e("xCoor", xCoor + "->");
+            hasDefaultScale = true;
+
+//            mGestureCropImageView.zoomInImage(defaultScale);
+//            mGestureCropImageView.postScale(defaultScale, xCoor, yCoor);
+
+        }
     }
 
     @Override
@@ -357,6 +388,11 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
 
                             @Override
                             public void onFailure(@NonNull Exception bitmapWorkerException) {
+
+                            }
+
+                            @Override
+                            public void afterLoadComplete(float scale, float xCoor, float yCoor) {
 
                             }
                         });
@@ -444,6 +480,7 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
         }
     }
 
+
     private void setupViews(@NonNull Intent intent) {
         mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, com.yalantis.ucrop.R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, com.yalantis.ucrop.R.color.ucrop_color_toolbar));
@@ -526,7 +563,10 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
 
     private void initiateRootViews() {
         mUCropView = findViewById(com.yalantis.ucrop.R.id.ucrop);
+        lowPixelsIv = findViewById(com.yalantis.ucrop.R.id.iv_lowPixels);
+
         mGestureCropImageView = mUCropView.getCropImageView();
+        mGestureCropImageView.setLowPixelsInteractions(this);
         mOverlayView = mUCropView.getOverlayView();
 
         mGestureCropImageView.setTransformImageListener(mImageListener);
@@ -545,6 +585,17 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
         @Override
         public void onScale(float currentScale) {
             setScaleText(currentScale);
+
+            mGestureCropImageView.getImageState();
+            if (hasDefaultScale) {
+                hasDefaultScale = false;
+                onDrawNewScales(defaultScale, xCoor, yCoor);
+            }
+        }
+
+        @Override
+        public void onDrawNewScales(float currentScale, float xc, float yc) {
+            mGestureCropImageView.postScale(currentScale, xc, yc);
         }
 
         @Override
@@ -560,7 +611,6 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
             setResultError(e);
             finish();
         }
-
     };
 
     /**
@@ -602,7 +652,8 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
             aspectRationSelectedByDefault = 0;
 
             aspectRatioList = new ArrayList<>();
-            aspectRatioList.add(new AspectRatio("8\":8\"", 8, 8));
+            aspectRatioList.add(new AspectRatio("Original", 0, 1));
+            aspectRatioList.add(new AspectRatio(null, 8, 8));
             aspectRatioList.add(new AspectRatio(null, 8, 12));
 //            aspectRatioList.add(new AspectRatio(getString(R.string.ucrop_label_original).toUpperCase(),
 //                    CropImageView.SOURCE_IMAGE_ASPECT_RATIO, CropImageView.SOURCE_IMAGE_ASPECT_RATIO));
@@ -868,7 +919,8 @@ public class UCropActivity extends AppCompatActivity implements ThumbnailsAdapte
 
     private void setAllowedGestures(int tab) {
         mGestureCropImageView.setScaleEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == SCALE);
-        mGestureCropImageView.setRotateEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE);
+        mGestureCropImageView.setRotateEnabled(false);
+//        mGestureCropImageView.setRotateEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE);
     }
 
     /**

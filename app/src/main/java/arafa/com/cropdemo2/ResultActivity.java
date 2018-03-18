@@ -97,6 +97,11 @@ public class ResultActivity extends BaseActivity {
                         public void onFailure(@NonNull Exception bitmapWorkerException) {
                             Log.e(TAG, "onFailure: setImageUri", bitmapWorkerException);
                         }
+
+                        @Override
+                        public void afterLoadComplete(float scale, float xCoor, float yCoor) {
+
+                        }
                     });
         } catch (Exception e) {
             Log.e(TAG, "setImageUri", e);

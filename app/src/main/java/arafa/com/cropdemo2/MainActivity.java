@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -22,8 +23,12 @@ import android.widget.Toast;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
+
+import me.iwf.photopicker.PhotoPicker;
+import me.iwf.photopicker.PhotoPickerActivity;
 
 import static com.yalantis.ucrop.UCrop.Options.ALL;
 import static com.yalantis.ucrop.UCrop.Options.ROTATE;
@@ -44,6 +49,7 @@ public class MainActivity extends BaseActivity {
     private TextView mTextViewQuality;
     private CheckBox mCheckBoxHideBottomControls;
     private CheckBox mCheckBoxFreeStyleCrop;
+    Button btn_facebook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +62,24 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_SELECT_PICTURE) {
-                final Uri selectedUri = data.getData();
-                if (selectedUri != null) {
-                    startCropActivity(data.getData());
-                } else {
-                    Toast.makeText(MainActivity.this, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show();
+            if (requestCode == PhotoPicker.REQUEST_CODE) {
+                if (data != null) {
+                    ArrayList<String> photos =
+                            data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
+                    String path = photos.get(0);
+                    startCropActivity(Uri.fromFile(new File(path)));
                 }
-            } else if (requestCode == UCrop.REQUEST_CROP) {
+            }
+
+//            if (requestCode == REQUEST_SELECT_PICTURE) {
+//                final Uri selectedUri = data.getData();
+//                if (selectedUri != null) {
+//                    startCropActivity(data.getData());
+//                } else {
+//                    Toast.makeText(MainActivity.this, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show();
+//                }
+//            }
+            else if (requestCode == UCrop.REQUEST_CROP) {
                 handleCropResult(data);
             }
         }
@@ -96,6 +112,7 @@ public class MainActivity extends BaseActivity {
                 pickFromGallery();
             }
         });
+
         findViewById(R.id.button_random_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,17 +184,25 @@ public class MainActivity extends BaseActivity {
         }
     };
 
+
     private void pickFromGallery() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
                     getString(R.string.permission_read_storage_rationale),
                     REQUEST_STORAGE_READ_ACCESS_PERMISSION);
         } else {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), REQUEST_SELECT_PICTURE);
+//            Intent intent = new Intent();
+//            intent.setType("image/*");
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//            intent.addCategory(Intent.CATEGORY_OPENABLE);
+//            startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), REQUEST_SELECT_PICTURE);
+
+            PhotoPicker.builder()
+                    .setPhotoCount(1)
+                    .setGridColumnCount(3)
+                    .setPreviewEnabled(false)
+                    .start(MainActivity.this);
+
         }
     }
 

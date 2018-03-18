@@ -62,4 +62,5 @@ dependencies {
 
     implementation  project (':ucrop')
 
+    compile project(path: ':PhotoPicker')
 }

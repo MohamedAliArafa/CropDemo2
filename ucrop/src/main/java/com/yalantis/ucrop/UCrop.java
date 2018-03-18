@@ -241,6 +241,30 @@ public class UCrop {
      */
     public static class Options {
 
+
+        public static final int REQUEST_CROP = 69;
+        public static final int RESULT_ERROR = 96;
+
+        private static final String EXTRA_PREFIX = "";
+
+        public static final String EXTRA_INPUT_URI = EXTRA_PREFIX + ".InputUri";
+        public static final String EXTRA_OUTPUT_URI = EXTRA_PREFIX + ".OutputUri";
+        public static final String EXTRA_SCALE_DEFAULT = EXTRA_PREFIX + ".Scale_default";
+        public static final String EXTRA_XCOR_DEFAULT = EXTRA_PREFIX + ".xCoordinate_default";
+        public static final String EXTRA_YCOR_DEFAULT = EXTRA_PREFIX + ".yCoordinate_default";
+        public static final String EXTRA_OUTPUT_CROP_ASPECT_RATIO = EXTRA_PREFIX + ".CropAspectRatio";
+        public static final String EXTRA_OUTPUT_IMAGE_WIDTH = EXTRA_PREFIX + ".ImageWidth";
+        public static final String EXTRA_OUTPUT_IMAGE_HEIGHT = EXTRA_PREFIX + ".ImageHeight";
+        public static final String EXTRA_OUTPUT_OFFSET_X = EXTRA_PREFIX + ".OffsetX";
+        public static final String EXTRA_OUTPUT_OFFSET_Y = EXTRA_PREFIX + ".OffsetY";
+        public static final String EXTRA_ERROR = EXTRA_PREFIX + ".Error";
+
+        public static final String EXTRA_ASPECT_RATIO_X = EXTRA_PREFIX + ".AspectRatioX";
+        public static final String EXTRA_ASPECT_RATIO_Y = EXTRA_PREFIX + ".AspectRatioY";
+
+        public static final String EXTRA_MAX_SIZE_X = EXTRA_PREFIX + ".MaxSizeX";
+        public static final String EXTRA_MAX_SIZE_Y = EXTRA_PREFIX + ".MaxSizeY";
+
         public static final String EXTRA_COMPRESSION_FORMAT_NAME = EXTRA_PREFIX + ".CompressionFormatName";
         public static final String EXTRA_COMPRESSION_QUALITY = EXTRA_PREFIX + ".CompressionQuality";
 
@@ -281,6 +305,8 @@ public class UCrop {
         public static final String EXTRA_ASPECT_RATIO_OPTIONS = EXTRA_PREFIX + ".AspectRatioOptions";
 
         public static final String EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR = EXTRA_PREFIX + ".UcropRootViewBackgroundColor";
+
+        public static final boolean DEFAULT_HIDE_BOTTOM_CONTROLS = false;
 
 
         private final Bundle mOptionBundle;

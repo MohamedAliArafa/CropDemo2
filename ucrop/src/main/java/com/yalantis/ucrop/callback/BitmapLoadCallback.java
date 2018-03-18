@@ -12,4 +12,5 @@ public interface BitmapLoadCallback {
 
     void onFailure(@NonNull Exception bitmapWorkerException);
 
+    void afterLoadComplete(float scale , float xCoor , float yCoor);
 }

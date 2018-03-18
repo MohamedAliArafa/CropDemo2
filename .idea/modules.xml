@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CropDemo2.iml" filepath="$PROJECT_DIR$/CropDemo2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CropDemo2.iml" filepath="$PROJECT_DIR$/.idea/CropDemo2.iml" />
+      <module fileurl="file://E:\GitApps\CropDemo2\CropDemo2.iml" filepath="E:\GitApps\CropDemo2\CropDemo2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PhotoPicker/PhotoPicker.iml" filepath="$PROJECT_DIR$/PhotoPicker/PhotoPicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/ucrop/ucrop.iml" filepath="$PROJECT_DIR$/ucrop/ucrop.iml" />
     </modules>

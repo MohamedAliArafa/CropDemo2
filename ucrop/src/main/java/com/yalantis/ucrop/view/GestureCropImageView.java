@@ -134,6 +134,7 @@ public class GestureCropImageView extends CropImageView {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             postTranslate(-distanceX, -distanceY);
+            getImageState();
             return true;
         }
 
